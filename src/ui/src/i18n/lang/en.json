@@ -1803,5 +1803,7 @@
     "新建步骤未完成，退出将撤销当前操作": "The creation step is not completed, exiting will undo the current operation",
     "编辑步骤未完成，退出将撤销当前操作": "The editing step is not completed, exiting will undo the current operation",
     "需要至少两个字段组成联合唯一": "At least two fields are required to form a union unique",
-    "尚未创建字段": "Field not yet created, {link}"
+    "尚未创建字段": "Field not yet created, {link}",
+    "字段冲突，该字段已经被其他模板绑定，请删除该模型或修改模板": "The field conflicts. The field has been bound to {other}. Delete the model or modify the template",
+    "其他模板": "another template"
 }

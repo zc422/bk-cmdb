@@ -18,6 +18,10 @@
   import FlexRow from '@/components/ui/other/flex-row.vue'
   import { DIFF_TYPES } from './use-field'
   import { PROPERTY_TYPES, PROPERTY_TYPE_NAMES } from '@/dictionary/property-constants'
+  import routerActions from '@/router/actions'
+  import {
+    MENU_MODEL_DETAILS
+  } from '@/dictionary/menu-symbol'
 
   const props = defineProps({
     show: {
@@ -82,7 +86,6 @@
       unchanged: t('无变化')
     }
     let title = titles[props.diffType]
-
     // 只有bk_template_id的key变更，使用指定title
     const updateDataKeys = Object.keys(props.fieldDiff?.update_data || {})
     if (props.diffType === DIFF_TYPES.UPDATE && updateDataKeys.length === 1 && updateDataKeys?.[0] === 'bk_template_id') {
@@ -149,6 +152,15 @@
 
     return classList
   }
+
+  const handleOtherTemplate = (model) => {
+    routerActions.open({
+      name: MENU_MODEL_DETAILS,
+      params: {
+        modelId: model.bk_obj_id
+      }
+    })
+  }
 </script>
 
 <template>
@@ -161,7 +173,21 @@
     <div :class="['diff-details', diffType, { 'is-template-conflict': isTemplateBindConflict }]" slot="content">
       <div class="diff-top">
         <div class="top-label">{{ $t('绑定变化：') }}</div>
-        <div :class="['top-content', diffType]">{{ diffTitle }}</div>
+        <div :class="['top-content', diffType]">
+          <template v-if="isTemplateBindConflict && props.diffType === 'conflict'">
+           <i18n path="字段冲突，该字段已经被其他模板绑定，请删除该模型或修改模板">
+            <template #other>
+              <bk-button
+                text
+                style="color: inherit;"
+                @click="handleOtherTemplate(modelBeforeField)">
+                {{$t('其他模板')}}
+              </bk-button>
+            </template>
+          </i18n>
+          </template>
+          <template v-else>{{ diffTitle }}</template>
+        </div>
       </div>
       <div class="diff-table">
         <div class="table-head">
