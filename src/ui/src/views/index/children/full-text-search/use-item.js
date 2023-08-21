@@ -95,7 +95,10 @@ export default function useItem(list) {
     const to = {
       name: MENU_RESOURCE_HOST_DETAILS,
       params: {
-        id: host.bk_host_id
+        id: host.bk_host_id,
+      },
+      query: {
+        from: 'resource'
       },
       history: true
     }
