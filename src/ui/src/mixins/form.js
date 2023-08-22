@@ -58,11 +58,13 @@ export default {
         group.bk_group_index = index
         this.$set(this.groupState, group.bk_group_id, group.is_collapse)
       })
+      console.log(allGroups, 'allGroupsallGroups')
       return allGroups
     },
     $sortedProperties() {
       const sortKey = 'bk_property_index'
       const properties = this.properties.filter(property => !property.bk_isapi)
+      console.log(properties, 'propertiesproperties')
       return properties.sort((propertyA, propertyB) => propertyA[sortKey] - propertyB[sortKey])
     },
     $groupedProperties() {

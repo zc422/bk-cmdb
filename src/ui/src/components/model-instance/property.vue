@@ -196,6 +196,7 @@
     watch: {
       inst(val) {
         this.instState = this.$tools.getInstFormValues(this.properties, val, false)
+        console.log(this.instState, 'instStateinstState')
       }
     },
     methods: {
