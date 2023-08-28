@@ -211,7 +211,6 @@
     watch: {
       inst(val) {
         this.instState = this.$tools.getInstFormValues(this.properties, val, false)
-        console.log(this.instState, 'instStateinstState')
       }
     },
     methods: {
@@ -219,11 +218,9 @@
       ...mapActions('objectBiz', ['updateBusiness']),
 
       isObject(val) {
-        console.log(val, 'val')
         return typeof val === 'object'
       },
       checkJson(property, showJson) {
-        console.log(property, showJson, 'property')
         property.show_json = showJson
         this.activityPropertyInfo = property
         this.$refs.checkJson.show()
