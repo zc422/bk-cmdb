@@ -25,87 +25,96 @@
             {{property.bk_property_name}}
           </div>
           <template v-if="property.bk_property_type !== PROPERTY_TYPES.INNER_TABLE">
-            <div :class="['property-value', { 'is-loading': loadingState.includes(property) }]"
-              v-if="property !== editState.property">
-              <cmdb-property-value
-                tag="div"
-                :is-show-overflow-tips="isShowOverflowTips(property)"
-                :ref="`property-value-${property.bk_property_id}`"
-                :value="instState[property.bk_property_id]"
-                :property="property">
-              </cmdb-property-value>
+            <div :class="['property-json-value', { 'is-loading': loadingState.includes(property) }]"
+              v-if="isObject(instState[property.bk_property_id])">
+              <i
+                class="icon-cc-json">
+              </i>
+              <span @click="checkJson(property, instState[property.bk_property_id])">{{$t('点击查看')}}</span>
             </div>
-            <template v-if="!loadingState.includes(property)">
-              <template v-if="!readonly && !isPropertyEditable(property)">
-                <i class="is-related property-edit icon-cc-edit-shape"
-                  v-bk-tooltips="{
-                    content: $t('系统限定不可修改'),
-                    placement: 'top',
-                    onShow: () => {
-                      setFocus(`#property-item-${property.id}`, true)
-                    },
-                    onHide: () => {
-                      setFocus(`#property-item-${property.id}`, false)
-                    }
-                  }">
-                </i>
-              </template>
-              <template v-else-if="!readonly">
-                <cmdb-auth
-                  style="margin: 8px 0 0 8px; font-size: 0;"
-                  :auth="authData"
-                  v-show="property !== editState.property">
-                  <bk-button slot-scope="{ disabled }"
-                    text
-                    theme="primary"
-                    class="property-edit-btn"
-                    :disabled="disabled"
-                    @click="setEditState(property)">
-                    <i class="property-edit icon-cc-edit-shape"></i>
-                  </bk-button>
-                </cmdb-auth>
-                <div class="property-form" v-if="property === editState.property"
-                  @keyup="(event) => keyupCallMethodFn(event)">
-                  <div :class="['form-component', property.bk_property_type]">
-                    <component
-                      :is="`cmdb-form-${property.bk_property_type}`"
-                      :class="[property.bk_property_type, { error: errors.has(property.bk_property_id) }]"
-                      :unit="property.unit"
-                      :options="property.option || []"
-                      :data-vv-name="property.bk_property_id"
-                      :data-vv-as="property.bk_property_name"
-                      :placeholder="$tools.getPropertyPlaceholder(property)"
-                      :auto-check="false"
-                      :multiple="property.ismultiple"
-                      v-bind="$tools.getValidateEvents(property)"
-                      v-validate="$tools.getValidateRules(property)"
-                      v-model.trim="editState.value"
-                      :ref="`component-${property.bk_property_id}`">
-                    </component>
-                  </div>
-                  <i class="form-confirm bk-icon icon-check-1" @click="confirm"></i>
-                  <i class="form-cancel bk-icon icon-close" @click="exitForm"></i>
-                  <span class="form-error"
-                    v-if="errors.has(property.bk_property_id)">
-                    {{errors.first(property.bk_property_id)}}
-                  </span>
-                </div>
-              </template>
-              <template v-if="!$tools.isEmptyPropertyValue(instState[property.bk_property_id])
-                && property !== editState.property">
-                <div class="copy-box">
-                  <i
-                    class="property-copy icon-cc-copy"
-                    @click="handleCopy(property.bk_property_id)">
+            <template v-else>
+              <div :class="['property-value', { 'is-loading': loadingState.includes(property) }]"
+                v-if="property !== editState.property">
+                <cmdb-property-value
+                  tag="div"
+                  :is-show-overflow-tips="isShowOverflowTips(property)"
+                  :ref="`property-value-${property.bk_property_id}`"
+                  :value="instState[property.bk_property_id]"
+                  :property="property">
+                </cmdb-property-value>
+              </div>
+              <template v-if="!loadingState.includes(property)">
+                <template v-if="!readonly && !isPropertyEditable(property)">
+                  <i class="is-related property-edit icon-cc-edit-shape"
+                    v-bk-tooltips="{
+                      content: $t('系统限定不可修改'),
+                      placement: 'top',
+                      onShow: () => {
+                        setFocus(`#property-item-${property.id}`, true)
+                      },
+                      onHide: () => {
+                        setFocus(`#property-item-${property.id}`, false)
+                      }
+                    }">
                   </i>
-                  <transition name="fade">
-                    <span class="copy-tips"
-                      :style="{ width: $i18n.locale === 'en' ? '100px' : '70px' }"
-                      v-if="showCopyTips === property.bk_property_id">
-                      {{$t('复制成功')}}
+                </template>
+                <template v-else-if="!readonly">
+                  <cmdb-auth
+                    style="margin: 8px 0 0 8px; font-size: 0;"
+                    :auth="authData"
+                    v-show="property !== editState.property">
+                    <bk-button slot-scope="{ disabled }"
+                      text
+                      theme="primary"
+                      class="property-edit-btn"
+                      :disabled="disabled"
+                      @click="setEditState(property)">
+                      <i class="property-edit icon-cc-edit-shape"></i>
+                    </bk-button>
+                  </cmdb-auth>
+                  <div class="property-form" v-if="property === editState.property"
+                    @keyup="(event) => keyupCallMethodFn(event)">
+                    <div :class="['form-component', property.bk_property_type]">
+                      <component
+                        :is="`cmdb-form-${property.bk_property_type}`"
+                        :class="[property.bk_property_type, { error: errors.has(property.bk_property_id) }]"
+                        :unit="property.unit"
+                        :options="property.option || []"
+                        :data-vv-name="property.bk_property_id"
+                        :data-vv-as="property.bk_property_name"
+                        :placeholder="$tools.getPropertyPlaceholder(property)"
+                        :auto-check="false"
+                        :multiple="property.ismultiple"
+                        v-bind="$tools.getValidateEvents(property)"
+                        v-validate="$tools.getValidateRules(property)"
+                        v-model.trim="editState.value"
+                        :ref="`component-${property.bk_property_id}`">
+                      </component>
+                    </div>
+                    <i class="form-confirm bk-icon icon-check-1" @click="confirm"></i>
+                    <i class="form-cancel bk-icon icon-close" @click="exitForm"></i>
+                    <span class="form-error"
+                      v-if="errors.has(property.bk_property_id)">
+                      {{errors.first(property.bk_property_id)}}
                     </span>
-                  </transition>
-                </div>
+                  </div>
+                </template>
+                <template v-if="!$tools.isEmptyPropertyValue(instState[property.bk_property_id])
+                  && property !== editState.property">
+                  <div class="copy-box">
+                    <i
+                      class="property-copy icon-cc-copy"
+                      @click="handleCopy(property.bk_property_id)">
+                    </i>
+                    <transition name="fade">
+                      <span class="copy-tips"
+                        :style="{ width: $i18n.locale === 'en' ? '100px' : '70px' }"
+                        v-if="showCopyTips === property.bk_property_id">
+                        {{$t('复制成功')}}
+                      </span>
+                    </transition>
+                  </div>
+                </template>
               </template>
             </template>
           </template>
@@ -125,10 +134,12 @@
       </ul>
     </div>
     <slot name="append"></slot>
+    <check-json ref="checkJson" :property="activityPropertyInfo"></check-json>
   </div>
 </template>
 
 <script>
+  import CheckJson from './check-json.vue'
   import { mapGetters, mapActions } from 'vuex'
   import isEqual from 'lodash/isEqual'
   import formMixins from '@/mixins/form'
@@ -144,6 +155,9 @@
   import { keyupCallMethod } from '@/utils/util'
 
   export default {
+    components: {
+      CheckJson
+    },
     filters: {
       filterShowText(value, unit) {
         return value === '--' ? '--' : value + unit
@@ -176,7 +190,8 @@
           value: null
         },
         loadingState: [],
-        showCopyTips: false
+        showCopyTips: false,
+        activityPropertyInfo: {}
       }
     },
     computed: {
@@ -203,6 +218,16 @@
       ...mapActions('objectCommonInst', ['updateInst']),
       ...mapActions('objectBiz', ['updateBusiness']),
 
+      isObject(val) {
+        console.log(val, 'val')
+        return typeof val === 'object'
+      },
+      checkJson(property, showJson) {
+        console.log(property, showJson, 'property')
+        property.show_json = showJson
+        this.activityPropertyInfo = property
+        this.$refs.checkJson.show()
+      },
       setFocus(id, focus) {
         const item = this.$el.querySelector(id)
         focus ? item.classList.add('focus') : item.classList.remove('focus')
@@ -398,6 +423,19 @@
                         margin: 2px 0;
                         background-image: url("../../assets/images/icon/loading.svg");
                     }
+                }
+            }
+            .property-json-value {
+                color: #3A84FF;
+                cursor: pointer;
+                font-size: 12px;
+                @include space-between;
+                >.icon-cc-json {
+                  font-size: 16px;
+                }
+                >span {
+                  display: inline-block;
+                  margin-left: 6px;
                 }
             }
             .property-edit-btn {

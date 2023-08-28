@@ -803,7 +803,7 @@ url("fonts/iconcool.eot?#iefix") format("embedded-opentype");
 .icon-cc-set-permission:before {
 	content: "\e3af";
 }
-.icon-json:before {
+.icon-cc-json:before {
 	content: "\e3b2";
 }
 .icon-cc-port-fill:before {

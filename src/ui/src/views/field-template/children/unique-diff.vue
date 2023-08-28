@@ -239,7 +239,7 @@
       grid-template-columns: 1fr 1fr;
       padding: 12px 0;
       font-size: 12px;
-      background: #FAFBFD;
+      background: #FFF;
       box-shadow: inset 0 1px 0 0 #DCDEE5, inset 0 -1px 0 0 #DCDEE5;
 
       .col {
