@@ -231,6 +231,7 @@
   import instanceService from '@/service/instance/instance'
   import { resetConditionValue } from '@/components/filters/general-model-filter.js'
   import { PROPERTY_TYPES } from '@/dictionary/property-constants'
+  import { checkAvailable } from '@/router'
 
   const defaultFastSearch = () => ({
     field: 'bk_inst_name',
@@ -372,7 +373,7 @@
       }
     },
     watch: {
-      '$route.query'() {
+      '$route'(to, from) {
         if (this.$route.name !== MENU_RESOURCE_INSTANCE) {
           return
         }
@@ -380,6 +381,12 @@
         this.setDynamicBreadcrumbs()
         this.throttleGetTableData()
         this.updateFilterTagHeight()
+        const isAvailable = checkAvailable(to, from)
+        if (!isAvailable) {
+          this.$routerActions.redirect({
+            name: '404'
+          })
+        }
       },
       'filter.field'() {
         // 模糊搜索

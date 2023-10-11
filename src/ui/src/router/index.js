@@ -192,7 +192,7 @@ const checkViewAuthorize = async to => Promise.resolve()
 
 const setLoading = loading => router.app.$store.commit('setGlobalLoading', loading)
 
-const checkAvailable = (to, from) => {
+export const checkAvailable = (to, from) => {
   if (typeof to.meta.checkAvailable === 'function') {
     return to.meta.checkAvailable(to, from, router.app)
   }
