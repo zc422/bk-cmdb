@@ -377,16 +377,16 @@
         if (this.$route.name !== MENU_RESOURCE_INSTANCE) {
           return
         }
-        this.setupFilter()
-        this.setDynamicBreadcrumbs()
-        this.throttleGetTableData()
-        this.updateFilterTagHeight()
         const isAvailable = checkAvailable(to, from)
         if (!isAvailable) {
           this.$routerActions.redirect({
             name: '404'
           })
         }
+        this.setupFilter()
+        this.setDynamicBreadcrumbs()
+        this.throttleGetTableData()
+        this.updateFilterTagHeight()
       },
       'filter.field'() {
         // 模糊搜索
