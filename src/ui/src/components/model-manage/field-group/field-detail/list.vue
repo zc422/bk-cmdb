@@ -121,7 +121,7 @@
             name: item.name
           }))
           if (this.defaultValue) {
-            this.defaultListValue = this.settingList.find(item => item.name === this.defaultValue).id
+            this.defaultListValue = this.settingList.find(item => item.name === this.defaultValue)?.id
           }
         }
       }

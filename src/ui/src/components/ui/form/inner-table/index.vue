@@ -2,6 +2,7 @@
   <div class="cmdb-form-innertable">
     <div class="innertable-container" v-bkloading="{ isLoading }">
       <data-row
+        ref="scrollRef"
         type="list"
         :mode="mode"
         :property="property"
@@ -17,6 +18,11 @@
         @add="handleClickAdd" />
       <div class="row-add" v-show="isShowAddRow">
         <data-row
+          v-scroll-follow="{
+            ref: scrollRef,
+            scroll: 'bk-table-body-wrapper',
+            follow: 'bk-table-body-wrapper'
+          }"
           type="add"
           :mode="mode"
           :property="property"
@@ -110,6 +116,8 @@
   const emit = defineEmits(['input'])
 
   const defaultRowData = ref([])
+  const scrollRef = ref(null)
+  console.log(scrollRef, 'aaa')
   const newRowData = () => {
     const data = {}
     const header = props.property?.option?.header || []
