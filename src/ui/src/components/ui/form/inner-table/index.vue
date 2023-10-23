@@ -2,7 +2,12 @@
   <div class="cmdb-form-innertable">
     <div class="innertable-container" v-bkloading="{ isLoading }">
       <data-row
-        ref="scrollRef"
+        ref="scrollRefFirst"
+        v-scroll-follow="{
+          ref: scrollRefSecond,
+          scroll: 'bk-table-body-wrapper',
+          follow: 'bk-table-body-wrapper'
+        }"
         type="list"
         :mode="mode"
         :property="property"
@@ -18,10 +23,11 @@
         @add="handleClickAdd" />
       <div class="row-add" v-show="isShowAddRow">
         <data-row
+          ref="scrollRefSecond"
           v-scroll-follow="{
-            ref: scrollRef,
+            ref: scrollRefFirst,
             scroll: 'bk-table-body-wrapper',
-            follow: 'bk-table-body-wrapper'
+            follow: getFollowEl
           }"
           type="add"
           :mode="mode"
@@ -116,8 +122,8 @@
   const emit = defineEmits(['input'])
 
   const defaultRowData = ref([])
-  const scrollRef = ref(null)
-  console.log(scrollRef, 'aaa')
+  const scrollRefFirst = ref(null)
+  const scrollRefSecond = ref(null)
   const newRowData = () => {
     const data = {}
     const header = props.property?.option?.header || []
@@ -140,6 +146,7 @@
   })
 
   const maxRowDisabled = computed(() => tableData.value.length === 50)
+  const getFollowEl = computed(() => (tableData.value.length ? 'bk-table-body-wrapper' : 'bk-table-header-wrapper'))
 
   const exitAdd = () => {
     isShowAddRow.value = false

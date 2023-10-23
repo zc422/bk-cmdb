@@ -13,38 +13,36 @@
 /**
  * @directive 滚动跟随
  */
-const ScrollEle = {}
-const followEle = {}
-let nowUid = null
-const scrollFn = (e, nowUid) => {
-  console.log(e, e?.target?.scrollLeft, 'scrolling')
-  followEle[nowUid].scrollLeft = e?.target?.scrollLeft
+const ScrollEleSet = new Set()
+const followEleMap = new Map()
+const scrollFn = (e) => {
+  const { target } = e
+  const followEle = followEleMap.get(target)
+  if (!ScrollEleSet.has(target) || !followEle) return
+  followEle.scrollLeft = e?.target?.scrollLeft
 }
-const bb = (e) => {
-  scrollFn(e, nowUid)
+const hasUid = (value) => {
+  // eslint-disable-next-line no-underscore-dangle
+  if (!value?.ref?._uid) return {}
+  return value
 }
-const isInRef = {}
 export const scrollFollow = {
   update: (el, { value }) => {
-    const {
-      ref,
-      scroll, // 添加滚动事件的元素，如果没有则为el
-      follow // 滚动跟随的元素，如果没有则为ref
-    } = value
-    const { _uid: uid } = ref
-    if (!uid) return
-    nowUid = uid
-    console.log(isInRef[uid], ref)
-    if (isInRef[uid]) return
-    isInRef[uid] = true
-    ScrollEle[uid] = scroll ? el.getElementsByClassName(scroll)[0] : el
-    followEle[uid] = follow ? ref.$el.getElementsByClassName(follow)[0] : ref.$el
-    console.log(ScrollEle, 'addScrollEle', followEle)
-    // 为ScrollEle注册滚动事件
-    ScrollEle[uid]?.addEventListener('scroll', bb)
+    const { scroll, follow, ref } = hasUid(value)
+    if (!ref) return
+    // 当前滚动条元素
+    const ScrollEle = scroll ? el.getElementsByClassName(scroll)[0] : el
+    followEleMap.set(ScrollEle, follow ? ref.$el.getElementsByClassName(follow)[0] : ref.$el)
+    ScrollEleSet.add(ScrollEle)
+    ScrollEle?.addEventListener('scroll', scrollFn)
   },
-  unbind: () => {
-    console.log('unbind')
-    // ScrollEle?.removeEventListener('scroll', scrollFn)
+  unbind: (el, { value }) => {
+    const { scroll, ref } = hasUid(value)
+    if (!ref) return
+    // 当前滚动条元素
+    const ScrollEle = scroll ? el.getElementsByClassName(scroll)[0] : el
+    followEleMap.delete(ScrollEle)
+    ScrollEleSet.delete(ScrollEle)
+    ScrollEle?.removeEventListener('scroll', scrollFn)
   }
 }

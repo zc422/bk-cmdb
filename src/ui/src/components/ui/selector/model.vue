@@ -13,6 +13,9 @@
 <template>
   <bk-select
     v-bind="$attrs"
+    :multiple="multiple"
+    :display-tag="multiple"
+    :selected-style="getSelectedStyle"
     v-model="localValue">
     <bk-option-group
       v-for="(group, index) in displayModelList"
@@ -34,7 +37,11 @@
       value: {
         type: [Array, String],
         default: ''
-      }
+      },
+      multiple: {
+        type: Boolean,
+        default: false
+      },
     },
     data() {
       return {
@@ -42,6 +49,9 @@
       }
     },
     computed: {
+      getSelectedStyle() {
+        return this.multiple ? 'checkbox' : 'check'
+      },
       localValue: {
         get() {
           return this.value

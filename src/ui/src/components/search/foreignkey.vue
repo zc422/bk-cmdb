@@ -16,6 +16,8 @@
     v-model="localValue"
     v-bind="$attrs"
     :multiple="multiple"
+    :display-tag="multiple"
+    :selected-style="getSelectedStyle"
     :loading="$loading(requestId)"
     :remote-method="searchArea"
     @clear="() => $emit('clear')"
@@ -61,6 +63,9 @@
     computed: {
       multiple() {
         return Array.isArray(this.value)
+      },
+      getSelectedStyle() {
+        return this.multiple ? 'checkbox' : 'check'
       },
       localValue: {
         get() {

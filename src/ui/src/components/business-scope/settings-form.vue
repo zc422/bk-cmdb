@@ -22,6 +22,7 @@
         search-with-pinyin
         display-tag
         multiple
+        selected-style="checkbox"
         searchable
         enable-virtual-scroll
         id-key="bk_biz_id"

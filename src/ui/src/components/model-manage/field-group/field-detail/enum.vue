@@ -75,6 +75,8 @@
             :clearable="false"
             :disabled="isReadOnly"
             :multiple="isDefaultCompMultiple"
+            :display-tag="isDefaultCompMultiple"
+            :selected-style="getSelectedStyle"
             name="defaultValueSelect"
             data-vv-validate-on="change"
             :popover-options="{
@@ -147,6 +149,9 @@
       isDefaultCompMultiple() {
         // 通过类型指定默认值组件是否可多选，用于与可多选配置区分开
         return this.type === PROPERTY_TYPES.ENUMMULTI
+      },
+      getSelectedStyle() {
+        return this.isDefaultCompMultiple ? 'checkbox' : 'check'
       },
       isMultiple: {
         get() {

@@ -17,6 +17,8 @@
     :searchable="searchable"
     :disabled="disabled"
     :multiple="localMultiple"
+    :display-tag="localMultiple"
+    :selected-style="getSelectedStyle"
     :placeholder="placeholder"
     :font-size="fontSize"
     :popover-options="{
@@ -85,6 +87,9 @@
     computed: {
       searchable() {
         return this.options.length > 7
+      },
+      getSelectedStyle() {
+        return this.localMultiple ? 'checkbox' : 'check'
       },
       localMultiple() {
         if (Array.isArray(this.initValue) && this.initValue.length > 1 && !this.multiple) {

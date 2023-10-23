@@ -16,6 +16,8 @@
     v-model="localValue"
     v-bind="$attrs"
     :multiple="multiple"
+    :display-tag="multiple"
+    :selected-style="getSelectedStyle"
     @clear="() => $emit('clear')"
     @toggle="handleToggle">
     <bk-option v-for="option in options"
@@ -44,6 +46,9 @@
     computed: {
       multiple() {
         return Array.isArray(this.value)
+      },
+      getSelectedStyle() {
+        return this.multiple ? 'checkbox' : 'check'
       },
       localValue: {
         get() {

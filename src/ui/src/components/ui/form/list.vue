@@ -17,6 +17,8 @@
     :searchable="searchable"
     :disabled="disabled"
     :multiple="multiple"
+    :display-tag="multiple"
+    :selected-style="getSelectedStyle"
     :placeholder="placeholder"
     :font-size="fontSize"
     :popover-options="{
@@ -75,6 +77,9 @@
       }
     },
     computed: {
+      getSelectedStyle() {
+        return this.multiple ? 'checkbox' : 'check'
+      },
       searchable() {
         return this.options.length > 7
       }
