@@ -181,6 +181,7 @@
     beforeDestroy() {
       this.unwatchQuery && this.unwatchQuery()
     },
+
     methods: {
       handleSearch(filter) {
         const query = {
