@@ -209,10 +209,12 @@
 <template>
   <bk-dialog
     v-model="isShow"
-    width="670"
+    width="622"
     render-directive="if"
     :title="$t('表格列设置')"
     header-position="left"
+    v-dialog-vertical-center
+    class="field-settings-model"
     :mask-close="false"
     :auto-close="false"
     @confirm="handleConfirm">
@@ -346,9 +348,14 @@
 </template>
 
 <style lang="scss" scoped>
+  .field-settings-model {
+    :deep(.bk-dialog-body) {
+      padding: 3px 0 26px !important;
+    }
+  }
   .content-layout {
     height: 340px;
-    padding: 0 12px;
+    padding: 0 36px;
     @include scrollbar-y;
   }
 

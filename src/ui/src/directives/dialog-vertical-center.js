@@ -10,24 +10,21 @@
  * limitations under the License.
  */
 
-import Vue from 'vue'
-import vClickOutside from 'v-click-outside'
-import cursor from './cursor.js'
-import transferDom from './transfer-dom.js'
-import setTestId from './set-test-id.js'
-import { autofocus } from './autofocus.js'
-import { scrollFollow } from './scroll-follow.js'
-import { dialogVerticalCenter } from './dialog-vertical-center'
-
-Vue.use(vClickOutside)
-Vue.use(cursor)
-Vue.use(setTestId)
-Vue.directive('autofocus', autofocus)
-Vue.directive('scroll-follow', scrollFollow)
-Vue.directive('dialog-vertical-center', dialogVerticalCenter)
-Vue.directive('transfer-dom', transferDom)
-
-export default {
-  'v-click-outside': vClickOutside,
-  'v-transfer-dom': transferDom
+/**
+ * @directive dialog框垂直居中
+ */
+export const dialogVerticalCenter = {
+  update: (el) => {
+    setTimeout(() => {
+      // 获取要设置居中的element
+      const dialogEle = el.getElementsByClassName('bk-dialog')[0]
+      // 获取当前content的element
+      const contentEle = el.getElementsByClassName('bk-dialog-content')[0]
+      if (!dialogEle || !contentEle) return
+      // 当前视窗高度
+      const height = document.body.clientHeight
+      const top = (height - contentEle.clientHeight) >> 1
+      dialogEle.style.top = `${top}px`
+    }, 0)
+  }
 }
