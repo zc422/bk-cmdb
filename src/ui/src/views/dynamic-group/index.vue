@@ -160,15 +160,15 @@
       },
     },
     created() {
-      this.unwatchQuery = RouterQuery.watch('*', ({ page, limit, sort, action, id, name, bk_obj_id, modify_user  }) => {
+      this.unwatchQuery = RouterQuery.watch('*', ({ page, limit, sort, action, id, name, bk_obj_id: objId, modify_user: modifyUser  }) => {
         this.table.pagination.current = parseInt(page || this.table.pagination.current, 10)
         this.table.pagination.limit = parseInt(limit || this.table.pagination.limit, 10)
         this.table.sort = sort || this.table.sort
         const queryFilter = [
           { id: 'id', value: id },
           { id: 'name', value: name },
-          { id: 'bk_obj_id', value: bk_obj_id },
-          { id: 'modify_user', value: modify_user }
+          { id: 'bk_obj_id', value: objId },
+          { id: 'modify_user', value: modifyUser }
         ]
         this.filter = queryFilter.filter(item => item.value?.length)
         if (action === 'create') {
@@ -177,9 +177,11 @@
         this.getList()
       }, { immediate: true })
     },
+
     beforeDestroy() {
       this.unwatchQuery && this.unwatchQuery()
     },
+
     methods: {
       handleSearch(filter) {
         const query = {
