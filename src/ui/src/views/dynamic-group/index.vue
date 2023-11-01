@@ -177,6 +177,7 @@
         this.getList()
       }, { immediate: true })
     },
+
     beforeDestroy() {
       this.unwatchQuery && this.unwatchQuery()
     },
