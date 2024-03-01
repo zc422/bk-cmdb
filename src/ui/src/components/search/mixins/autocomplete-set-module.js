@@ -21,6 +21,10 @@ export default {
   },
   methods: {
     async fuzzySearchMethod(keyword) {
+      if (!keyword) {
+        this.options = []
+        return
+      }
       try {
         const list = await this.$http.post('findmany/object/instances/names', {
           bk_obj_id: this.type,
@@ -30,9 +34,11 @@ export default {
           requestId: `fuzzy_search_${this.type}`,
           cancelPrevious: true
         })
+        const results = list.map(name => ({ text: name, value: name }))
+        this.options = results
         return Promise.resolve({
           next: false,
-          results: list.map(name => ({ text: name, value: name }))
+          results
         })
       } catch (error) {
         return Promise.reject(error)

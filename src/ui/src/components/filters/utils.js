@@ -136,11 +136,11 @@ export function findProperty(id, properties, key) {
   const field = isInt(String(id)) ? 'id' : 'bk_property_id'
 
   // 先按默认的规则找
-  let found = properties.find(property => property[field].toString() === id.toString())
+  let found = properties.find(property => property[field]?.toString() === id?.toString())
 
   // 找不到同时指定了key则再根据key再找一次，此处已无从考究是何时添加了key参数，固添加此逻辑
   if (!found && key) {
-    found = properties.find(property => property[key].toString() === id.toString())
+    found = properties.find(property => property[key]?.toString() === id?.toString())
   }
 
   return found
@@ -221,6 +221,7 @@ export function transformCondition(condition, properties, header) {
 }
 
 export function transformGeneralModelCondition(condition, properties) {
+  console.log(condition, properties, 'aaa')
   const conditionIds = Object.keys(condition)
   if (!conditionIds.length) {
     return

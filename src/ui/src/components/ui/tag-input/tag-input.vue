@@ -49,12 +49,15 @@
                 {{getDisplayText(tag)}}
               </span>
             </template>
-            <i class="tag-input-selected-clear bk-icon icon-close" v-if="tagClearable"
+            <i class="tag-input-selected-clear bk-icon icon-close" v-if="tagClearable && !disabled"
               @mouseup.left.stop
               @mousedown.left.stop="handleRemoveMouseDown"
               @click.stop.prevent="handleRemoveSelected(tag, index)">
             </i>
           </span>
+          <!-- <span class="tag-input-overflow-tag" v-if="overflowTagIndex" v-bk-tooltips="collapseTooltip">
+            +{{ localValue.length - overflowTagIndex }}
+          </span> -->
         </template>
         <span ref="input" class="tag-input-input"
           spellcheck="false"
@@ -192,6 +195,8 @@
         highlightIndex: -1,
         shouldUpdate: true,
         isFocus: false,
+        showOverflowTag: false,
+        collapseTooltip: '',
         overflowTagIndex: null,
         currentData: [],
         matchedData: [],
@@ -558,12 +563,13 @@
       },
       // 已选的鼠标划过事件，如果配置了显示tips，则在一定延时后显示
       handleSelectedMouseenter(event, { value }) {
-        if (!this.displayTagTips) return
+        // if (!this.displayTagTips) return
         const target = event.currentTarget
+        console.log(this.displayTagTips, target, 'aa')
         // eslint-disable-next-line no-underscore-dangle
-        if (target._tag_tips_) {
+        /* if (target._tag_tips_) {
           return false
-        }
+        } */
         this.selectedTipsTimer[value] = setTimeout(() => {
           // eslint-disable-next-line no-underscore-dangle,new-cap
           target._tag_tips_ = Tippy(target, {
@@ -903,6 +909,10 @@
         const overflowTagNode = this.getOverflowTagNode()
         const selectedTag = this.getSelectedDOM()
         const referenceTag = selectedTag[this.overflowTagIndex]
+        // if (!referenceTag) {
+        //   this.overflowTagIndex = null
+        //   return
+        // }
         if (referenceTag) {
           overflowTagNode.textContent = `+${this.localValue.length - this.overflowTagIndex}`
           this.$refs.container.insertBefore(overflowTagNode, referenceTag)
@@ -918,6 +928,10 @@
             overflowTagNode.textContent = `+${this.localValue.length - this.overflowTagIndex}`
           }
         }, 0)
+        document.getElementsByClassName('tag-input-overflow-tag')[0].addEventListener('mouseenter', (event) => {
+          console.log(11)
+          this.handleSelectedMouseenter(event, { value: 'agasgd' })
+        }, false)
       },
       // 创建/获取溢出数字节点
       getOverflowTagNode() {
@@ -936,6 +950,7 @@
         if (this.overflowTagNode && this.overflowTagNode.parentNode === this.$refs.container) {
           this.$refs.container.removeChild(this.overflowTagNode)
         }
+        // this.overflowTagIndex = null
       },
       // 一键清空
       handleFastClear() {
@@ -967,4 +982,21 @@
         line-height: 24px;
         padding: 0;
     }
+    // .tag-input-overflow-tag {
+    //   position: relative;
+    // }
+    // .tag-input-overflow-tag:hover::after {
+    //   content: attr(data-tooltip);
+    //   color: red;
+    //   position: absolute;
+    //   z-index: 999;
+    //   padding: 7px 12px;
+    //   font-size: 12px;
+    //   background-color: rgba(0,0,0,.8);
+    //   color: #fff;
+    //   border-radius: 4px;
+    //   width: auto;
+    //   transition-duration: 0ms;
+    //   transform: translate(-100%, -100%);
+    // }
 </style>

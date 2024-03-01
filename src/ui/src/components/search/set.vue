@@ -11,26 +11,113 @@
 -->
 
 <template>
-  <cmdb-tag-input
+  <bk-select
+    searchable
     v-model="localValue"
     v-bind="$attrs"
-    :fuzzy-search-method="fuzzySearchMethod"
-    :exact-search-method="exactSearchMethod"
+    :multiple="multiple"
+    display-tag
+    selected-style="checkbox"
+    :loading="$loading(requestId)"
+    :remote-method="fuzzySearchMethod"
     @clear="() => $emit('clear')"
-    @focus="handleToggle(true, ...arguments)"
-    @blur="handleToggle(false, ...arguments)">
-  </cmdb-tag-input>
+    @toggle="handleToggle">
+    <bk-option v-for="option in options"
+      :key="option.value"
+      :id="option.value"
+      :name="`${option.value}`">
+    </bk-option>
+  </bk-select>
 </template>
 
 <script>
+  import activeMixin from './mixins/active'
   import autocomplete from './mixins/autocomplete-set-module'
+  import debounce from 'lodash.debounce'
+
   export default {
     name: 'cmdb-search-set',
-    mixins: [autocomplete],
+    mixins: [activeMixin, autocomplete],
+    props: {
+      value: {
+        type: [String, Array, Number],
+        default: () => ([])
+      },
+      displayType: {
+        type: String,
+        default: 'selector',
+        validator(type) {
+          return ['selector', 'info'].includes(type)
+        }
+      }
+    },
     data() {
       return {
+        options: [],
+        requestId: 'searchForeignkey',
         type: 'set'
       }
+    },
+    computed: {
+      multiple() {
+        return Array.isArray(this.value)
+      },
+      localValue: {
+        get() {
+          return this.value
+        },
+        set(value) {
+          this.$emit('input', value)
+          this.$emit('change', value)
+        }
+      },
+      info() {
+        const values = Array.isArray(this.value) ? this.value : [this.value]
+        const info = []
+        values.forEach((value) => {
+          const data = this.options.find(data => data.bk_cloud_id === value)
+          data && info.push(data.bk_cloud_name)
+        })
+        return info.join(' | ')
+      }
+    },
+    created() {
+      // this.getCloudArea()
+      // this.searchArea =  debounce(this.getCloudArea, 300)
+    },
+    methods: {
+      async getCloudArea(key) {
+        const condition = {}
+        if (key) {
+          condition.$or = []
+          condition.$or.push({
+            bk_cloud_name: {
+              $regex: key
+            }
+          })
+          if (!isNaN(Number(key))) {
+            condition.$or.push({
+              bk_cloud_id: Number(key)
+            })
+          }
+        }
+        try {
+          const { info } = await this.$store.dispatch('cloud/area/findMany', {
+            params: {
+              condition,
+              page: {
+                sort: 'bk_cloud_name'
+              }
+            },
+            config: {
+              requestId: this.requestId
+            }
+          })
+          this.options = info
+        } catch (error) {
+          console.error(error)
+        }
+      },
     }
   }
 </script>

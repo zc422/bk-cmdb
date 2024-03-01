@@ -159,6 +159,11 @@
         &.has-fast-select {
             /deep/ .user-selector-container {
                 padding-right: 20px;
+            &.disabled {
+                .user-selector-selected-clear {
+                    display: none !important;
+                }
+            }
             }
         }
 

@@ -196,9 +196,10 @@
         const isModuleName = modelId === 'module' && propertyId === 'bk_module_name'
 
         if ((isSetName || isModuleName) && this.condition[property.id].operator !== '$regex') {
+          console.log(modelId, 'modelId')
           return `cmdb-search-${modelId}`
         }
-
+        console.log(propertyType, 'propertyType')
         return `cmdb-search-${propertyType}`
       },
       getBindProps(property) {
