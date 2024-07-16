@@ -18,6 +18,7 @@
       v-bind="$attrs"
       :multiple="true"
       display-tag
+      show-select-all
       selected-style="checkbox"
       @clear="() => $emit('clear')"
       @toggle="handleToggle">

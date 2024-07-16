@@ -15,6 +15,7 @@
     <bk-select
       multiple
       display-tag
+      show-select-all
       selected-style="checkbox"
       searchable
       v-model="localValue"
